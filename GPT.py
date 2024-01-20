@@ -1,13 +1,16 @@
 from flask import Flask, request, jsonify, make_response
+from flask_cors import CORS
 import os
 from openai import OpenAI
 import json
 
 # Flaskの起動
 app = Flask(__name__)
+CORS(app)
 
-#@app.route('/generate', methods=['POST'])
-@app.route('/')
+# ルーティングの設定
+@app.route('/',methods=['GET','POST'])
+
 def home():
     return generate()
 
@@ -24,9 +27,9 @@ def generate():
 
     # メッセージの設定
     messages = [
-        {"role": "system", "content": "海で冒険をするシナリオのノベルゲームを作ってください。シナリオと２つの選択肢を考えてください。ここではシナリオを書いてください。"},
-        {"role": "assistant", "content": "選択肢１の文章を書いて。"},
-        {"role": "assistant", "content": "選択肢２の文章を書いて。"}
+        {"role": "assistant", "content": "海で冒険をするノベルゲームを作ってください。シナリオとそれに対応する２つの選択肢を考えてください。jsonフォーマットは シナリオ名:文章,シナリオ内容:文章,選択肢1:文章,選択肢2:文章 です。ここではシナリオだけを書いてください。"},
+        {"role": "assistant", "content": "選択肢１を書いて。"},
+        {"role": "assistant", "content": "選択肢２を書いて。"}
     ]
 
     # APIリクエストの設定
@@ -48,16 +51,16 @@ def generate():
     #修正前
     #return jsonify([choice['message']['content'] for choice in response['choices']])
     #修正後(rawjson)
-    #return jsonify([choice.message.content for choice in response.choices])
+    return jsonify([choice.message.content for choice in response.choices])
         
     #日本語出力
      # 生成されたテキストの取得
-    result = [choice.message.content for choice in response.choices]
+    #result = [choice.message.content for choice in response.choices]
      # 結果をJSONファイルとして出力
-    with open('output.json', 'w', encoding='utf-8') as f:
-        json.dump(result, f, ensure_ascii=False, indent=4)
+    #with open('output.json', 'w', encoding='utf-8') as f:
+    #    json.dump(result, f, ensure_ascii=False, indent=4)
     # JSON形式での返却（日本語をそのまま出力）
-    return make_response(json.dumps(result, ensure_ascii=False))
+    #return make_response(json.dumps(result, ensure_ascii=False))
 
 if __name__ == '__main__':
     app.run(debug=True)
