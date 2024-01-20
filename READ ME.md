@@ -9,6 +9,11 @@ GPT.pyに必要なライブラリのインストール
 pip install openai
 #古いバージョンのopenaiライブラリを使っている人
 pip install -U openai
+
+#flaskのインストール
+pip install flask
+#flask_corsのインストール
+pip install flask_cors
 ```
 ## インストール方法
 説明書に記載されたソフトウェアやツールのインストール手順をここに記述します。
