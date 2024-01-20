@@ -47,7 +47,7 @@ def generate():
 
     # メッセージの設定
     messages = [
-        {"role": "assistant", "content": "前回のシナリオは「" + data.get('key') + "」でした。この続きのシナリオを書いてください。形式としてシナリオ名及びシナリオ内容と、それに対応する2つの行動の選択肢を出力してください。jsonフォーマット { シナリオ名:文章, シナリオ内容:文章, 選択肢1:文章, 選択肢2:文章 } の形で返してください。"},
+        {"role": "assistant", "content": "前回のシナリオは「" + data.get('key') + "」でした。この続きのシナリオを書いてください。形式としてシナリオ名及びシナリオ内容と、それに対応する2つの行動の選択肢を出力してください。jsonフォーマット { シナリオ名:文章, シナリオ内容:文章, 選択肢1:文章,選択肢1(ローマ字):,選択肢2:文章,選択肢2(ローマ字):} の形で返してください。"},
     ]
 
     # APIリクエストの設定
@@ -74,6 +74,14 @@ def generate():
     # デバッグ用
     print(json_data['選択肢1'])
     print(json_data['選択肢2'])
+
+    # kakashiで選択肢を日本語を訓令式アルファベットに変換したものを新たに追加
+    json_data['選択肢1(ローマ字)'] = conv.do(json_data['選択肢1'])
+    json_data['選択肢2(ローマ字)'] = conv.do(json_data['選択肢2'])
+
+    # デバッグ用
+    print(json_data['選択肢1(ローマ字)'])
+    print(json_data['選択肢2(ローマ字)'])
 
     # ながーい1プロンプトで処理するならforループは不要
     # return jsonify([choice.message.content for choice in response.choices])
