@@ -15,7 +15,11 @@ def home():
     return generate()
 
 def generate():
-    #data = request.get_json()
+    data = request.get_json()
+    # デバッグ用
+    print(data)
+    print(data.get('key'))
+    
     # APIクライアントの初期化
     client = OpenAI(
         # This is the default and can be omitted
@@ -27,9 +31,7 @@ def generate():
 
     # メッセージの設定
     messages = [
-        {"role": "assistant", "content": "海で冒険をするノベルゲームを作ってください。シナリオとそれに対応する２つの選択肢を考えてください。jsonフォーマットは シナリオ名:文章,シナリオ内容:文章,選択肢1:文章,選択肢2:文章 です。ここではシナリオだけを書いてください。"},
-        {"role": "assistant", "content": "選択肢１を書いて。"},
-        {"role": "assistant", "content": "選択肢２を書いて。"}
+        {"role": "assistant", "content": "前回のシナリオは「" + data.get('key') + "」でした。この続きのシナリオを書いてください。形式としてシナリオ名及びシナリオ内容と、それに対応する2つの行動の選択肢を出力してください。jsonフォーマット { シナリオ名:文章, シナリオ内容:文章, 選択肢1:文章, 選択肢2:文章 } の形で返してください。"},
     ]
 
     # APIリクエストの設定
@@ -53,14 +55,14 @@ def generate():
     #修正後(rawjson)
     return jsonify([choice.message.content for choice in response.choices])
         
-    #日本語出力
-     # 生成されたテキストの取得
-    #result = [choice.message.content for choice in response.choices]
-     # 結果をJSONファイルとして出力
-    #with open('output.json', 'w', encoding='utf-8') as f:
+    # 日本語出力
+    # 生成されたテキストの取得
+    # result = [choice.message.content for choice in response.choices]
+    # 結果をJSONファイルとして出力
+    # with open('output.json', 'w', encoding='utf-8') as f:
     #    json.dump(result, f, ensure_ascii=False, indent=4)
     # JSON形式での返却（日本語をそのまま出力）
-    #return make_response(json.dumps(result, ensure_ascii=False))
+    # return make_response(json.dumps(result, ensure_ascii=False))
 
 if __name__ == '__main__':
     app.run(debug=True)
