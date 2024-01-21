@@ -14,6 +14,9 @@ pip install -U openai
 pip install flask
 #flask_corsのインストール
 pip install flask_cors
+
+#pykakasiのインストール
+pip install pykakasi
 ```
 ## インストール方法
 説明書に記載されたソフトウェアやツールのインストール手順をここに記述します。
