@@ -41,18 +41,16 @@ def generate():
     
     # APIクライアントの初期化
     client = OpenAI(
-
-        # This is the default and can be omitted
-        organization=os.environ.get('OpenAI_organization'),
-        api_key=os.environ.get('API_KEY_openai')
-
+        api_key='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'
+        # organization=os.environ.get('OpenAI_organization'),
+        # api_key=os.environ.get('API_KEY_openai')
     )
 
     #messages = data.get('messages', [])
 
     # メッセージの設定
     messages = [
-        {"role": "assistant", "content": "前回のシナリオは「" + data.get('key') + "」でした。この続きのシナリオを書いてください。形式としてシナリオ名及びシナリオ内容と、それに対応する2つの行動の選択肢を出力してください。jsonフォーマット { シナリオ名:文章, シナリオ内容:文章, 選択肢1:文章,選択肢2:文章:} の形で返してください。"},
+        {"role": "assistant", "content": "前回のシナリオ内容は「" + data.get('scenarioKey') + "」で、選ばれた選択は「" + data.get('choiceKey') + "」。この続きのシナリオを書いてください。形式としてシナリオ名及びシナリオ内容と、それに対応する2つの行動の選択肢を出力してください。jsonフォーマット { シナリオ名:文章, シナリオ内容:文章, 選択肢1:文章,選択肢2:文章:} の形で返してください。"},
     ]
 
     # APIリクエストの設定
