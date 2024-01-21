@@ -42,9 +42,8 @@ def generate():
     client = OpenAI(
 
         # This is the default and can be omitted
-        api_key='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'
-        # organization=os.environ.get('OpenAI_organization'),
-        # api_key=os.environ.get('API_KEY_openai')
+        organization=os.environ.get('OpenAI_organization'),
+        api_key=os.environ.get('API_KEY_openai')
 
     )
 
