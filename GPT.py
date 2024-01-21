@@ -13,6 +13,8 @@ kakasi.setMode("K", "a")
 # ひらがな⇒ヘボン式アルファベット変換を設定
 kakasi.setMode("H", "a")
 
+conv = kakasi.getConverter()
+
 # デバッグ用
 # text = "じゃあちゃんと注意しゅるふぉ"
 # print(conv.do(text))
