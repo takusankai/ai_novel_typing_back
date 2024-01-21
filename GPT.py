@@ -12,7 +12,6 @@ kakasi.setMode("J", "a")
 kakasi.setMode("K", "a")
 # ひらがな⇒ヘボン式アルファベット変換を設定
 kakasi.setMode("H", "a")
-conv = kakasi.getConverter()
 
 # デバッグ用
 # text = "じゃあちゃんと注意しゅるふぉ"
@@ -84,15 +83,19 @@ def generate():
     pick2_conv = conv.do(json_data['選択肢2'])
 
     # デバッグ用
-    print(pick1_conv)
-    print(pick2_conv)
+    # print(pick1_conv)
+    # print(pick2_conv)
 
     # json_dataに追加
-    json_data['選択肢1のローマ字'] = pick1_conv
-    json_data['選択肢2のローマ字'] = pick2_conv
+    json_data['選択肢1_ローマ字'] = pick1_conv
+    json_data['選択肢2_ローマ字'] = pick2_conv
 
     # デバッグ用
     print(json_data)
+    
+    # デバッグ用なのだ！ずんだもんなのだ！
+    print("選択肢1_ローマ字",json_data['選択肢1_ローマ字'])
+    print("選択肢2_ローマ字",json_data['選択肢2_ローマ字'])
 
     # json_dataをpythonの文字列型に変換
     json_data_str = json.dumps(json_data, ensure_ascii=False)
