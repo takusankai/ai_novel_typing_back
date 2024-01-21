@@ -6,9 +6,11 @@ import json
 from pykakasi import kakasi
 
 kakasi = kakasi()
-# 漢字⇒訓令式アルファベット変換を設定
+# 漢字⇒ヘボン式アルファベット変換を設定
 kakasi.setMode("J", "a")
-# ひらがな⇒訓令式アルファベット変換を設定
+# カタカナ⇒ヘボン式アルファベット変換を設定
+kakasi.setMode("K", "a")
+# ひらがな⇒ヘボン式アルファベット変換を設定
 kakasi.setMode("H", "a")
 conv = kakasi.getConverter()
 
@@ -18,6 +20,8 @@ conv = kakasi.getConverter()
 
 # Flaskの起動
 app = Flask(__name__)
+app.config['JSON_AS_ASCII'] = False
+app.config["JSON_SORT_KEYS"] = False
 CORS(app)
 
 # ルーティングの設定
@@ -38,8 +42,9 @@ def generate():
     client = OpenAI(
 
         # This is the default and can be omitted
-        organization=os.environ.get('OpenAI_organization'),
-        api_key=os.environ.get('API_KEY_openai')
+        api_key='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'
+        # organization=os.environ.get('OpenAI_organization'),
+        # api_key=os.environ.get('API_KEY_openai')
 
     )
 
@@ -47,7 +52,7 @@ def generate():
 
     # メッセージの設定
     messages = [
-        {"role": "assistant", "content": "前回のシナリオは「" + data.get('key') + "」でした。この続きのシナリオを書いてください。形式としてシナリオ名及びシナリオ内容と、それに対応する2つの行動の選択肢を出力してください。jsonフォーマット { シナリオ名:文章, シナリオ内容:文章, 選択肢1:文章,選択肢1(ローマ字):,選択肢2:文章,選択肢2(ローマ字):} の形で返してください。"},
+        {"role": "assistant", "content": "前回のシナリオは「" + data.get('key') + "」でした。この続きのシナリオを書いてください。形式としてシナリオ名及びシナリオ内容と、それに対応する2つの行動の選択肢を出力してください。jsonフォーマット { シナリオ名:文章, シナリオ内容:文章, 選択肢1:文章,選択肢2:文章:} の形で返してください。"},
     ]
 
     # APIリクエストの設定
@@ -75,26 +80,29 @@ def generate():
     print(json_data['選択肢1'])
     print(json_data['選択肢2'])
 
-    # kakashiで選択肢を日本語を訓令式アルファベットに変換したものを新たに追加
-    json_data['選択肢1(ローマ字)'] = conv.do(json_data['選択肢1'])
-    json_data['選択肢2(ローマ字)'] = conv.do(json_data['選択肢2'])
+    # kakashiで選択肢を日本語をヘボン式アルファベットに変換したものを新たに追加
+    pick1_conv = conv.do(json_data['選択肢1'])
+    pick2_conv = conv.do(json_data['選択肢2'])
 
     # デバッグ用
-    print(json_data['選択肢1(ローマ字)'])
-    print(json_data['選択肢2(ローマ字)'])
+    print(pick1_conv)
+    print(pick2_conv)
+
+    # json_dataに追加
+    json_data['選択肢1のローマ字'] = pick1_conv
+    json_data['選択肢2のローマ字'] = pick2_conv
+
+    # デバッグ用
+    print(json_data)
+
+    # json_dataをpythonの文字列型に変換
+    json_data_str = json.dumps(json_data, ensure_ascii=False)
 
     # ながーい1プロンプトで処理するならforループは不要
     # return jsonify([choice.message.content for choice in response.choices])
-    return jsonify(choice.message.content.strip())
+    # return jsonify(choice.message.content.strip())
 
-    # 日本語出力
-    # 生成されたテキストの取得
-    # result = [choice.message.content for choice in response.choices]
-    # 結果をJSONファイルとして出力
-    # with open('output.json', 'w', encoding='utf-8') as f:
-    #    json.dump(result, f, ensure_ascii=False, indent=4)
-    # JSON形式での返却（日本語をそのまま出力）
-    # return make_response(json.dumps(result, ensure_ascii=False))
+    return jsonify(json_data_str)
 
 # 初回の起動処理
 if __name__ == '__main__':
