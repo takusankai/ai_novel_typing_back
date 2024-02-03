@@ -32,25 +32,35 @@ def home():
     return generate()
 
 def generate():
-
     data = request.get_json()
 
-    # デバッグ用
-    # print(data)
-    # print(data.get('key'))
-    
     # APIクライアントの初期化
     client = OpenAI(
-        api_key='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'
-        # organization=os.environ.get('OpenAI_organization'),
-        # api_key=os.environ.get('API_KEY_openai')
+        organization=os.environ.get('OpenAI_organization'),
+        api_key=os.environ.get('API_KEY_openai')
     )
 
-    #messages = data.get('messages', [])
+    scenario = data.get('scenarioKey')
+    choice = data.get('choiceKey')
+    number = data.get('numberKey')
+    print("inputs: ")
+    print(scenario, choice, number)
+
+    # 出力テキスト
+    # if number == 6:
+    #     text = "jsonフォーマットで{{シナリオ名:null, シナリオ内容:null, 選択肢1:null, 選択肢2:null}}を返してください。"
+    # else:
+    text = """前回のシナリオ内容は「{}」で、選ばれた選択は「{}」でした。
+    これは5つのシナリオからなるストーリーの{}番目です。これの続きのシナリオを生成してください。
+    形式としてシナリオ名及びシナリオ内容と、それに対応する2つの行動の選択肢を出力してください。
+    jsonフォーマット{{シナリオ名:文章, シナリオ内容:文章, 選択肢1:文章,選択肢2:文章:}}の
+    形で返してください。""".format(scenario, choice, number)
 
     # メッセージの設定
     messages = [
-        {"role": "assistant", "content": "前回のシナリオ内容は「" + data.get('scenarioKey') + "」で、選ばれた選択は「" + data.get('choiceKey') + "」。この続きのシナリオを書いてください。形式としてシナリオ名及びシナリオ内容と、それに対応する2つの行動の選択肢を出力してください。jsonフォーマット { シナリオ名:文章, シナリオ内容:文章, 選択肢1:文章,選択肢2:文章:} の形で返してください。"},
+        {"role": "assistant",
+        "content": text
+        },
     ]
 
     # APIリクエストの設定
@@ -70,27 +80,22 @@ def generate():
         # print(f"\nresult {i}:")
         # print(choice.message.content.strip())
     choice = response.choices[0]
+    print("受け取ったメッセージ: ")
+    print(choice.message.content.strip())
 
     # json.loads関数を使ってPythonデータ構造のJSON形式への変換
     json_data = json.loads(choice.message.content.strip())
-    
-    # デバッグ用
-    print(json_data['選択肢1'])
-    print(json_data['選択肢2'])
 
     # kakashiで選択肢を日本語をヘボン式アルファベットに変換したものを新たに追加
     pick1_conv = conv.do(json_data['選択肢1'])
     pick2_conv = conv.do(json_data['選択肢2'])
-
-    # デバッグ用
-    # print(pick1_conv)
-    # print(pick2_conv)
 
     # json_dataに追加
     json_data['選択肢1_ローマ字'] = pick1_conv
     json_data['選択肢2_ローマ字'] = pick2_conv
 
     # デバッグ用
+    print("json_data: ")
     print(json_data)
     
     # デバッグ用なのだ！ずんだもんなのだ！
@@ -103,7 +108,6 @@ def generate():
     # ながーい1プロンプトで処理するならforループは不要
     # return jsonify([choice.message.content for choice in response.choices])
     # return jsonify(choice.message.content.strip())
-
     return jsonify(json_data_str)
 
 # 初回の起動処理
