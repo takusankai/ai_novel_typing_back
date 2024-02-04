@@ -10,22 +10,7 @@ pykakashiで選択肢のローマ字バージョンを生成。
 jsonファイルを返す
 
 ## 必要なもの
-GPT.pyに必要なライブラリのインストール
-``` bash
-#openaiライブラリをインストールしていない人
-pip install openai
-#古いバージョンのopenaiライブラリを使っている人
-pip install -U openai
-
-#flaskのインストール
-pip install flask
-#flask_corsのインストール
-pip install flask_cors
-
-#pykakasiのインストール
-pip install pykakasi
-```
-
+.envファイルにOpenAIのAPIキーを入れてください。
 ## よくある質問
 よくある質問とその回答をここに記述します。
 
