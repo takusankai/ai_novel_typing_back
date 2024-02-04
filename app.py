@@ -4,6 +4,7 @@ import os
 from openai import OpenAI
 import json
 from pykakasi import kakasi
+from dotenv import load_dotenv
 
 kakasi = kakasi()
 # 漢字⇒ヘボン式アルファベット変換を設定
@@ -34,10 +35,13 @@ def home():
 def generate():
     data = request.get_json()
 
+    # .envファイルを読み込む
+    load_dotenv()
+
     # APIクライアントの初期化
     client = OpenAI(
-        organization=os.environ.get('OpenAI_organization'),
-        api_key=os.environ.get('API_KEY_openai')
+        organization=os.getenv('OpenAI_organization'),
+        api_key=os.getenv('API_KEY_openai')
     )
 
     scenario = data.get('scenarioKey')
@@ -80,8 +84,7 @@ def generate():
             "シナリオ内容":"文章", 
             "選択肢1":"達成おめでとう",
             "選択肢2":"タイピングお疲れ様"
-        }}の
-        にしてください。
+        }}
         """
     else:
         text = f"""
@@ -98,7 +101,7 @@ def generate():
         "シナリオ内容": "文章",
         "選択肢1": "文章",
         "選択肢2": "文章"
-        }}。
+        }}
         """
 
     # メッセージの設定
