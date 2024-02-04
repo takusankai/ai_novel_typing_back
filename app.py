@@ -115,7 +115,7 @@ def generate():
 
     # APIリクエストの設定
     response = client.chat.completions.create(
-        model="gpt-3.5-turbo",  # GPTのエンジン名を指定します
+        model="gpt-3.5-turbo-16k",  # GPTのエンジン名を指定します
         messages=messages,
         max_tokens=300,  # 生成するトークンの最大数
         n=1,  # 生成するレスポンスの数
