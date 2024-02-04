@@ -16,6 +16,7 @@ kakasi.setMode("H", "a")
 
 conv = kakasi.getConverter()
 
+load_dotenv('.env')
 # デバッグ用
 # text = "じゃあちゃんと注意しゅるふぉ"
 # print(conv.do(text))
@@ -36,7 +37,8 @@ def generate():
     data = request.get_json()
 
     # .envファイルを読み込む
-    load_dotenv()
+    print(load_dotenv()) 
+    print(os.getenv('API_KEY_openai'))
 
     # APIクライアントの初期化
     client = OpenAI(
@@ -150,7 +152,9 @@ def generate():
     # デバッグ用
     print("json_data: ")
     print(json_data)
-    
+
+    #ねこなのだ
+    print("ねこ")
     # デバッグ用なのだ！ずんだもんなのだ！
     print("選択肢1_ローマ字",json_data['選択肢1_ローマ字'])
     print("選択肢2_ローマ字",json_data['選択肢2_ローマ字'])
@@ -165,4 +169,4 @@ def generate():
 
 # 初回の起動処理
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')

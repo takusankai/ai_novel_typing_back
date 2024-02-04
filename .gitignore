@@ -1,2 +1,6 @@
 .env
 output.json
+fly.toml
+.dockerignore
+gptvenv
+__pycache__
